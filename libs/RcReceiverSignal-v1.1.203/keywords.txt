@@ -1,0 +1,10 @@
+RcReceiverSignal	KEYWORD1
+DECLARE_RECEIVER_SIGNAL	KEYWORD1
+setup	KEYWORD2
+getSignalValue	KEYWORD2
+getDeviceSignalValue	KEYWORD2
+getPwmValue	KEYWORD2
+hasChanged	KEYWORD2
+onPinRising	KEYWORD2
+onPinFalling	KEYWORD2
+setExternalTimeCounter	KEYWORD2

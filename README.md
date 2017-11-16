@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.org/hotzenklotz/RC-Tank.svg?branch=master)](https://travis-ci.org/hotzenklotz/RC-Tank)
+
 # RC Tank
 
-[![Build Status](https://travis-ci.org/hotzenklotz/RC-Tank.svg?branch=master)](https://travis-ci.org/hotzenklotz/RC-Tank)
 A small hobby Arduino project to connect some motors to a Flysky RC receiver using PWM signals.
 
 ## Hardware Requirements

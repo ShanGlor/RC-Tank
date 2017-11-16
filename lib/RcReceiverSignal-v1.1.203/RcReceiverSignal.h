@@ -19,7 +19,7 @@
 //  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // DISCLAIMER:
-//  This software is furnished "as is", without technical support, and with no 
+//  This software is furnished "as is", without technical support, and with no
 //  warranty, express or implied, as to its usefulness for any purpose.
 //
 // PURPOSE:
@@ -29,7 +29,7 @@
 //  pulse sent by the receiver.
 //
 //  It allows the main loop to retrieve the latest received pulse length (PWM)
-//  and convert the pulse length back to the actual transmitter signal value 
+//  and convert the pulse length back to the actual transmitter signal value
 //  (ranging from -150% to 150%).
 //
 //  The library supports automatic PWM signal change detection. The library's
@@ -64,7 +64,7 @@
 #define RCRECEIVERSIGNAL_USE_INT_CHANGE_EVENT
 #define RCRECEIVERSIGNAL_USE_EXT_32BITS_COUNTER
 
-#include "arduino.h"
+#include "Arduino.h"
 
 #define MIN_RECEIVER_PWM 820
 #define MAX_RECEIVER_PWM 2200
@@ -87,7 +87,7 @@ public:
   ~RcReceiverSignal();
 
   typedef short VALUE;
-  
+
   /****************************************************************************
    * PinChangeInt indirect dependency support
    ****************************************************************************/
@@ -131,7 +131,7 @@ public:
   /****************************************************************************
    * Description:
    *   getPwmValue() returns the last PWM value observed by the instance of the
-   *   configured pin. The method is ISR-safe which means that it will alter 
+   *   configured pin. The method is ISR-safe which means that it will alter
    *   hardware intterupts on all pins if the function is call to often.
    *   Use hasChanged() to minimize the impact.
    *
@@ -150,7 +150,7 @@ public:
 
   /****************************************************************************
    * Description:
-   *   getDeviceSignalValue() convert a given PWM signal from a known device 
+   *   getDeviceSignalValue() convert a given PWM signal from a known device
    *   combination to a transmitter value.
    *   The returned a value ranges from -150% to +150%.
    * Parameters:
@@ -204,7 +204,7 @@ public:
 
   /****************************************************************************
    * Description:
-   *   setExternalTimeCounter() function setups library to use an external 
+   *   setExternalTimeCounter() function setups library to use an external
    *   timer counter.
    * Parameters:
    *   iExtCntFunc:     Pointer to an external 32 bits time counter function.
@@ -222,7 +222,7 @@ public:
 
 #endif //RCRECEIVERSIGNAL_USE_EXT_32BITS_COUNTER
 
-  
+
 private:
   //attributes
 #ifdef RCRECEIVERSIGNAL_USE_EXT_32BITS_COUNTER

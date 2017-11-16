@@ -6,7 +6,7 @@
 // See "RcReceiverSignal.h" for license, purpose, syntax, version history, links, and more.
 // ---------------------------------------------------------------------------
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "RcReceiverSignal.h"
 
 #define CLAMP_VALUE(value_min, actual_value, value_max) (actual_value < value_min ? value_min : (actual_value > value_max ? value_max : actual_value)  )
@@ -17,7 +17,7 @@ typedef struct {
   double a0;
 } POLYMONIAL_FUNCTION;
 
-// Define all polynomial functions for all RcTxRxCombo enumations 
+// Define all polynomial functions for all RcTxRxCombo enumations
 static POLYMONIAL_FUNCTION comboFunctions[] = {
   //a2,     a1,           a0
   {0.0,     0.220219436,  -331.6504702},  //LEGACY,
@@ -48,7 +48,7 @@ RcReceiverSignal::RcReceiverSignal()
   mReceiverPin = 0;
   mChanged = false;
 }
-  
+
 RcReceiverSignal::~RcReceiverSignal()
 {
 }
@@ -76,7 +76,7 @@ void RcReceiverSignal::setup(uint8_t iReceiverPin, ISR iChangedFunction)
     return;
 
   pinMode(iReceiverPin, INPUT); digitalWrite(iReceiverPin, HIGH); //use the internal pullup resistor
-  
+
   mReceiverPin = iReceiverPin;
   mChangedFunction = iChangedFunction;
 
@@ -92,7 +92,7 @@ void RcReceiverSignal::setup(uint8_t iReceiverPin, ISR iRisingFunction, ISR iFal
     return;
 
   pinMode(iReceiverPin, INPUT); digitalWrite(iReceiverPin, HIGH); //use the internal pullup resistor
-  
+
   mReceiverPin = iReceiverPin;
   mRisingFunction = iRisingFunction;
   mFallingFunction = iFallingFunction;
@@ -106,7 +106,7 @@ RcReceiverSignal::VALUE RcReceiverSignal::getSignalValue(unsigned long iPwmValue
 {
   //make sure the PWM value is within acceptable range
   unsigned long pwmValue = CLAMP_VALUE(MIN_RECEIVER_PWM, iPwmValue, MAX_RECEIVER_PWM);
-  
+
   //map to a signal value
   RcReceiverSignal::VALUE signalValue = 0;
 
@@ -126,7 +126,7 @@ RcReceiverSignal::VALUE RcReceiverSignal::getDeviceSignalValue(RcTxRxCombo iComb
 {
   //make sure the PWM value is within acceptable range
   unsigned long pwmValue = CLAMP_VALUE(MIN_RECEIVER_PWM, iPwmValue, MAX_RECEIVER_PWM);
-  
+
   //find the polynomial function that matches the device combination
   POLYMONIAL_FUNCTION * poly = NULL;
   switch(iComboId)
@@ -243,7 +243,7 @@ void RcReceiverSignal::onPinRising()
 #else
   mRisingTime = micros(); //count units of 4us each;
 #endif
-  
+
   //prepare interrupting on pin FALLING
   mAttachIntFuncPtr(mReceiverPin, mFallingFunction, FALLING);
 }
@@ -268,12 +268,12 @@ void RcReceiverSignal::onPinFalling()
   mFallingTime = micros(); //count units of 4us each;
   mPwmValue = mFallingTime - mRisingTime;
 #endif
-  
+
   //update changed flag
   mChanged = (mPwmValue != prevPwmValue);
 
   //prepare interrupting on pin RISING
-  mAttachIntFuncPtr(mReceiverPin, mRisingFunction, RISING);  
+  mAttachIntFuncPtr(mReceiverPin, mRisingFunction, RISING);
 }
 #endif
 

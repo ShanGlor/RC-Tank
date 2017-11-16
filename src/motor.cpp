@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <Math.h>
+#include <math.h>
 #include "motor.h"
 
 #define clamp(x) (min(255, max(x, 0)))

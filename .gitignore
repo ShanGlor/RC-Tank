@@ -33,3 +33,5 @@
 *.hex
 
 .svn
+.pioenvs
+.piolibdeps

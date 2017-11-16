@@ -12,13 +12,21 @@ Motor::Motor(short pwmPin, short directionPin) {
 void Motor::driveForward(short speed) {
   digitalWrite(directionPin, LOW);
   analogWrite(pwmPin, clamp(255 - speed));
-  Serial.println("FORWARD");
-  Serial.println(speed);
+
+  #ifdef DEBUG
+    Serial.println("FORWARD");
+    Serial.println(255 - speed);
+  #endif
 };
 
 void Motor::driveBackwards(short speed) {
   digitalWrite(directionPin, HIGH);
   analogWrite(pwmPin, clamp(speed));
+
+  #ifdef DEBUG
+    Serial.println("BACK");
+    Serial.println(speed);
+  #endif
 };
 
 void Motor::stop() {

@@ -38,27 +38,8 @@ void setup()
     Serial.println("ready");
   #endif
 
-
   receiver_throttle_setup(PIN_RC_THROTTLE);
   receiver_steering_setup(PIN_RC_STEERING);
-}
-
-void printReceiver(const char * iName, RcReceiverSignal * iReceiverSignal)
-{
-  unsigned long pwmValue = iReceiverSignal->getPwmValue();
-  RcReceiverSignal::VALUE value = iReceiverSignal->getSignalValue(pwmValue);
-
-  #ifdef DEBUG
-    Serial.print(iName);
-    Serial.print(": ");
-    char signalStr[10];
-    sprintf(signalStr, "%4d", value);
-    Serial.print(signalStr);
-    Serial.print("% ");
-    Serial.print("PWM=");
-    Serial.print(iReceiverSignal->getPwmValue());
-    Serial.println();
-  #endif
 }
 
 void drive(RcReceiverSignal * receiver_throttle) {

@@ -4,28 +4,28 @@
 
 #define clamp(x) (min(255, max(x, 0)))
 
-Motor::Motor(short pwmPin, short directionPin) {
-  pwmPin = pwmPin;
-  directionPin = directionPin;
-};
+Motor::Motor(short pwmPin, short directionPin):
+  pwmPin(pwmPin),
+  directionPin(directionPin)
+  {};
 
-void Motor::driveForward(short speed) {
+void Motor::driveForward(int speed) {
   digitalWrite(directionPin, LOW);
-  analogWrite(pwmPin, clamp(255 - speed));
-
-  #ifdef DEBUG
-    Serial.println("FORWARD");
-    Serial.println(255 - speed);
-  #endif
-};
-
-void Motor::driveBackwards(short speed) {
-  digitalWrite(directionPin, HIGH);
   analogWrite(pwmPin, clamp(speed));
 
   #ifdef DEBUG
-    Serial.println("BACK");
+    Serial.println("FORWARD");
     Serial.println(speed);
+  #endif
+};
+
+void Motor::driveBackwards(int speed) {
+  digitalWrite(directionPin, HIGH);
+  analogWrite(pwmPin, clamp(255 - speed));
+
+  #ifdef DEBUG
+    Serial.println("BACK");
+    Serial.println(255 - speed);
   #endif
 };
 

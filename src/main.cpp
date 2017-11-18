@@ -16,7 +16,7 @@
 #define DEBUG
 #define DEADBAND 15
 
-Motor* motorA = new Motor(MOTOR_A_PWM, MOTOR_A_DIRECTION);
+Motor motorA(MOTOR_A_PWM, MOTOR_A_DIRECTION);
 
 DECLARE_RECEIVER_SIGNAL(receiver_throttle);
 DECLARE_RECEIVER_SIGNAL(receiver_steering);
@@ -52,14 +52,14 @@ void drive(RcReceiverSignal * receiver_throttle) {
   // the RC signal oscillates from -10 to +10
   if (throttleValue > -DEADBAND and throttleValue < DEADBAND) {
     // stop motor
-    motorA->stop();
+    motorA.stop();
 
   } else if (throttleValue > DEADBAND) {
-    motorA->driveForward(speed);
+    motorA.driveForward(speed);
 
   } else if (throttleValue < -DEADBAND) {
     // accelerate backwards
-    motorA->driveBackwards(speed);
+    motorA.driveBackwards(speed);
 
   }
 }

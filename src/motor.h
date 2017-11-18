@@ -1,8 +1,8 @@
 class Motor {
   public:
     Motor(short pwmPin, short directionPin);
-    void driveForward(short speed);
-    void driveBackwards(short speed);
+    void driveForward(int speed);
+    void driveBackwards(int speed);
     void stop();
 
   private:

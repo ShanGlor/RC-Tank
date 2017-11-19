@@ -5,6 +5,7 @@
 //RcReceiverSignal library has a dependency to PinChangeInt library.
 #include <PinChangeInt.h>
 #include <RcReceiverSignal.h>
+#include "fscale.h"
 #include "motor.h"
 
 #define PIN_RC_STEERING 2
@@ -17,7 +18,13 @@
 #define MOTOR_B_PWM 9 // supports PWM
 
 #define DEBUG
-#define DEADBAND 15
+#define CENTER_STICK_PWM 1500 // RC value for a centered joystick
+#define DEADBAND 60 // deadband around the center of the joystick, where nothing should happen
+
+#define MIN_PWM 0
+#define MAX_PWM 255
+#define MIN_STICK_VALUE 0
+#define MAX_STICK_VALUE 500
 
 Motor motorA(MOTOR_A_PWM, MOTOR_A_DIRECTION);
 Motor motorB(MOTOR_B_PWM, MOTOR_B_DIRECTION);
@@ -48,25 +55,36 @@ void setup()
   receiver_steering_setup(PIN_RC_STEERING);
 }
 
-void drive(RcReceiverSignal * receiver_throttle) {
-  unsigned long pwmValue = receiver_throttle->getPwmValue();
-  const short throttleValue = receiver_throttle->getSignalValue(pwmValue);
+int getStickValue(RcReceiverSignal * receiver) {
+  // since the stick is centered, its pwm value should be 1500
+  unsigned long pwmValue = receiver->getPwmValue();
+  return pwmValue - CENTER_STICK_PWM;
+}
 
-  unsigned long pwmValue = receiver_steering->getPwmValue();
-  const short steeringValue = receiver_steering->getSignalValue(pwmValue);
+void drive() {
 
-  // throttleValue range [-125, 125], 0 is center stick position
-  const int speed = map(abs(throttleValue) + DEADBAND, 0, 125, 0, 255);
+  const int throttleValue = getStickValue(&receiver_throttle);
+  const int steeringValue = getStickValue(&receiver_steering);
 
-  // the RC signal oscillates from -10 to +10
+  const int speed = map(abs(throttleValue), MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM);
+
+  const int steeringSlowdown = fscale(MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM, abs(steeringValue), -3);
+  const int steeringSpeed = speed - steeringSlowdown;
+
+  // the RC signal oscillates from -50 to +50
   if (throttleValue > -DEADBAND and throttleValue < DEADBAND) {
     // stop motor
     motorA.stop();
     motorB.stop();
 
   } else if (throttleValue > DEADBAND) {
-    motorA.driveForward(speed);
-    motorB.driveForward(speed);
+    if (steeringValue < 0) {
+        motorA.driveForward(speed);
+        motorB.driveForward(steeringSpeed);
+      } else {
+        motorA.driveForward(steeringSpeed);
+        motorB.driveForward(speed);
+      }
 
   } else if (throttleValue < -DEADBAND) {
     // accelerate backwards
@@ -77,7 +95,7 @@ void drive(RcReceiverSignal * receiver_throttle) {
 
 void loop()
 {
-  if (receiver_throttle.hasChanged()) {
-    drive(&receiver_throttle);
+  if (receiver_throttle.hasChanged() || receiver_steering.hasChanged()) {
+    drive();
   }
 }

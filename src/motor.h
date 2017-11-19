@@ -1,3 +1,5 @@
+#define clamp(x, minValue, maxValue) (min(maxValue, max(x, minValue)))
+
 class Motor {
   public:
     Motor(short pwmPin, short directionPin);

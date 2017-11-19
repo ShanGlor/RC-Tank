@@ -2,8 +2,6 @@
 #include <math.h>
 #include "motor.h"
 
-#define clamp(x) (min(255, max(x, 0)))
-
 Motor::Motor(short pwmPin, short directionPin):
   pwmPin(pwmPin),
   directionPin(directionPin)
@@ -11,7 +9,7 @@ Motor::Motor(short pwmPin, short directionPin):
 
 void Motor::driveForward(int speed) {
   digitalWrite(directionPin, LOW);
-  analogWrite(pwmPin, clamp(speed));
+  analogWrite(pwmPin, clamp(speed, 0 , 255));
 
   #ifdef DEBUG
     Serial.println("FORWARD");
@@ -21,7 +19,7 @@ void Motor::driveForward(int speed) {
 
 void Motor::driveBackwards(int speed) {
   digitalWrite(directionPin, HIGH);
-  analogWrite(pwmPin, clamp(255 - speed));
+  analogWrite(pwmPin, clamp(255 - speed, 0, 255));
 
   #ifdef DEBUG
     Serial.println("BACK");

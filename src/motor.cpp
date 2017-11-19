@@ -17,7 +17,7 @@ void Motor::driveForward(int speed) {
   #endif
 };
 
-void Motor::driveBackwards(int speed) {
+void Motor::driveBackward(int speed) {
   digitalWrite(directionPin, HIGH);
   analogWrite(pwmPin, clamp(255 - speed, 0, 255));
 

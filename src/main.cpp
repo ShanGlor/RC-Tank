@@ -61,6 +61,26 @@ int getStickValue(RcReceiverSignal * receiver) {
   return pwmValue - CENTER_STICK_PWM;
 }
 
+void driveForward(int speed, int steeringValue, int steeringSpeed) {
+  if (steeringValue < 0) {
+    motorA.driveForward(speed);
+    // enable active on-the-spot turning at max steering value
+    if (abs(steeringValue) < MAX_STICK_VALUE - 20) {
+      motorB.driveForward(steeringSpeed);
+    } else {
+      motorB.driveBackward(speed);
+    }
+  } else {
+    // enable active on-the-spot turning at max steering value
+    if (abs(steeringValue) < MAX_STICK_VALUE - 20) {
+      motorA.driveForward(steeringSpeed);
+    } else {
+      motorA.driveBackward(speed);
+    }
+    motorB.driveForward(speed);
+  }
+}
+
 void drive() {
 
   const int throttleValue = getStickValue(&receiver_throttle);
@@ -78,18 +98,12 @@ void drive() {
     motorB.stop();
 
   } else if (throttleValue > DEADBAND) {
-    if (steeringValue < 0) {
-        motorA.driveForward(speed);
-        motorB.driveForward(steeringSpeed);
-      } else {
-        motorA.driveForward(steeringSpeed);
-        motorB.driveForward(speed);
-      }
+      driveForward(speed, steeringValue, steeringSpeed);
 
   } else if (throttleValue < -DEADBAND) {
-    // accelerate backwards
-    motorA.driveBackwards(speed);
-    motorB.driveBackwards(speed);
+    // accelerate backward
+    motorA.driveBackward(speed);
+    motorB.driveBackward(speed);
   }
 }
 

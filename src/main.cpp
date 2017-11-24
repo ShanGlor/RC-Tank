@@ -61,23 +61,27 @@ int getStickValue(RcReceiverSignal * receiver) {
   return pwmValue - CENTER_STICK_PWM;
 }
 
-void driveForward(int speed, int steeringValue, int steeringSpeed) {
+void driveForward(int speed, int steeringValue) {
+  const Motor * m1;
+  const Motor * m2;
+
+  const int steeringSlowdown = fscale(MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM, abs(steeringValue), -3);
+  const int steeringSpeed = speed - steeringSlowdown;
+
   if (steeringValue < 0) {
-    motorA.driveForward(speed);
-    // enable active on-the-spot turning at max steering value
-    if (abs(steeringValue) < MAX_STICK_VALUE - 20) {
-      motorB.driveForward(steeringSpeed);
-    } else {
-      motorB.driveBackward(speed);
-    }
+    m1 = &motorA;
+    m2 = &motorB;
   } else {
-    // enable active on-the-spot turning at max steering value
-    if (abs(steeringValue) < MAX_STICK_VALUE - 20) {
-      motorA.driveForward(steeringSpeed);
-    } else {
-      motorA.driveBackward(speed);
-    }
-    motorB.driveForward(speed);
+    m1 = &motorB;
+    m2 = &motorA;
+  }
+
+  m1->driveForward(speed);
+  // enable active on-the-spot turning at max steering value
+  if (abs(steeringValue) < MAX_STICK_VALUE - 20) {
+    m2->driveForward(steeringSpeed);
+  } else {
+    m2->driveBackward(speed);
   }
 }
 
@@ -88,9 +92,6 @@ void drive() {
 
   const int speed = map(abs(throttleValue), MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM);
 
-  const int steeringSlowdown = fscale(MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM, abs(steeringValue), -3);
-  const int steeringSpeed = speed - steeringSlowdown;
-
   // the RC signal oscillates from -50 to +50
   if (throttleValue > -DEADBAND and throttleValue < DEADBAND) {
     // stop motor
@@ -98,7 +99,7 @@ void drive() {
     motorB.stop();
 
   } else if (throttleValue > DEADBAND) {
-      driveForward(speed, steeringValue, steeringSpeed);
+      driveForward(speed, steeringValue);
 
   } else if (throttleValue < -DEADBAND) {
     // accelerate backward

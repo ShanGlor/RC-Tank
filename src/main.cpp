@@ -65,9 +65,13 @@ void driveForward(int speed, int steeringValue) {
   const Motor * m1;
   const Motor * m2;
 
+  // slow down the left / right motor depending on the controller's
+  // stick deflections for left / right turns
   const int steeringSlowdown = fscale(MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM, abs(steeringValue), -3);
   const int steeringSpeed = speed - steeringSlowdown;
 
+  // determine the "main" motor m1 for the forward momentum that will run at
+  // "full" speed. Auxilliary motor m2 will run slower for steering left / right
   if (steeringValue < 0) {
     m1 = &motorA;
     m2 = &motorB;
@@ -90,10 +94,18 @@ void drive() {
   const int throttleValue = getStickValue(&receiver_throttle);
   const int steeringValue = getStickValue(&receiver_steering);
 
+  #ifdef DEBUG
+    Serial.print("Throttle Value: ");
+    Serial.println(throttleValue);
+    Serial.print("Steering Value: ");
+    Serial.println(steeringValue);
+  #endif
+
   const int speed = map(abs(throttleValue), MIN_STICK_VALUE, MAX_STICK_VALUE, MIN_PWM, MAX_PWM);
 
   // the RC signal oscillates from -50 to +50
   if (throttleValue > -DEADBAND and throttleValue < DEADBAND) {
+
     // stop motor
     motorA.stop();
     motorB.stop();
